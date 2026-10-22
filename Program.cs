@@ -1,12 +1,12 @@
-﻿using MiniDB.Routing;
-
-// init state
+﻿// init state
 Console.WriteLine("miniDB starting...");
 
 // configure api
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 //routes
 var app = builder.Build();
-app.SetRoutes();
+app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();

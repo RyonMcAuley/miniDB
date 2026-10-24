@@ -2,6 +2,6 @@ namespace miniDB.QueryEngine;
 
 public class QueryResult
 {
-    string? result { get; set; }
+    public string? result { get; set; }
 }
 

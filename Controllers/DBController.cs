@@ -5,7 +5,7 @@ namespace miniDB.DBController;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class DBController : ControllerBase
+public class DBController(SqlCommandHandler handler) : ControllerBase
 {
     [HttpGet]
     public string Test()
@@ -14,8 +14,8 @@ public class DBController : ControllerBase
     }
 
     [HttpPost]
-    public bool Insert(SqlCommandRequest command)
+    public async Task<bool> Insert(SqlCommandRequest command)
     {
-        return new SqlCommand().Handle(command);
+        return await handler.Handle(command);
     }
 }

@@ -30,8 +30,20 @@ public class QueryEngine : IQueryEngine
         switch (words[0])
         {
             case "insert":
-                return true;
+                if (words[1] == "into")
+                {
+                    //todo verify table exists, rows valid
+                    return true;
+                }
+                break;
             case "select":
+                if (words[1] == "*" || words[1] == "top")
+                {
+                    //todo verify rest of structure
+                    return true;
+                }
+                break;
+            case "create":
                 return true;
         }
         Console.WriteLine("No match found for: " + words[0]);

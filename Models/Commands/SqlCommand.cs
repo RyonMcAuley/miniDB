@@ -12,6 +12,9 @@ public class SqlCommandHandler(IQueryEngine queryEngine)
     public async Task<bool> Handle(SqlCommandRequest command)
     {
         ArgumentNullException.ThrowIfNull(command);
-        return await queryEngine.ExecuteAsync(command.sql) == null;
+        var result = await queryEngine.ExecuteAsync(command.sql);
+
+        Console.WriteLine(result.result);
+        return result.result != null;
     }
 }

@@ -4,8 +4,11 @@ public class QueryEngine : IQueryEngine
 {
     public async Task<QueryResult> ExecuteAsync(string sql)
     {
+        Console.WriteLine("SQL command received: " + sql);
         var result = "";
-        if (!await ValidateCommand(sql))
+        sql = sql.ToLower();
+        string[] words = sql.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (!await ValidateCommand(words))
         {
             return new QueryResult
             {
@@ -13,7 +16,7 @@ public class QueryEngine : IQueryEngine
             };
         }
 
-        result = "valid";
+        result = await ExecuteCommand(words);
 
         return new QueryResult
         {
@@ -21,12 +24,9 @@ public class QueryEngine : IQueryEngine
         };
     }
 
-    private async Task<bool> ValidateCommand(string sql)
+    private async Task<bool> ValidateCommand(string[] words)
     {
         //normalize command
-        sql = sql.ToLower();
-        Console.WriteLine("SQL command received: " + sql);
-        string[] words = sql.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         switch (words[0])
         {
             case "insert":
@@ -48,5 +48,11 @@ public class QueryEngine : IQueryEngine
         }
         Console.WriteLine("No match found for: " + words[0]);
         return false;
+    }
+
+    private async Task<string> ExecuteCommand(string[] words)
+    {
+        //placeholder determine the command and handle accordingly
+        return "valid";
     }
 }

@@ -1,6 +1,9 @@
+using miniDB.Enums;
+using miniDB.Logging;
+
 namespace miniDB.QueryEngine;
 
-public class QueryEngine : IQueryEngine
+public class QueryEngine(IMiniLogger logger) : IQueryEngine
 {
     public async Task<QueryResult> ExecuteAsync(string sql)
     {
@@ -53,6 +56,26 @@ public class QueryEngine : IQueryEngine
     private async Task<string> ExecuteCommand(string[] words)
     {
         //placeholder determine the command and handle accordingly
+        // build specs array
+        string[] specs = await Parse(words);
         return "valid";
+    }
+
+    private async Task<string[]> Parse(string[] words)
+    {
+        if (Enum.TryParse<Enums.Commands>(words[0], out var command)
+            && Enum.IsDefined(command))
+        {
+            return command switch
+            {
+                Enums.Commands.Select => await ParseHelpers.SelectParse(words),
+                Enums.Commands.Create => await ParseHelpers.CreateParse(words),
+                Enums.Commands.Insert => await ParseHelpers.CreateParse(words),
+                Enums.Commands.Delete => await ParseHelpers.DeleteParse(words),
+                _ => []
+            };
+        }
+        logger.Log("invalid command received in Parse");
+        return [];
     }
 }

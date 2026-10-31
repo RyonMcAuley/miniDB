@@ -55,15 +55,26 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
 
     private async Task<string> ExecuteCommand(string[] words)
     {
+        // array or execution object?
+        //
         //placeholder determine the command and handle accordingly
         // build specs array
         string[] specs = await Parse(words);
-        return "valid";
+        if (specs is not null && !string.IsNullOrEmpty(specs.ToString()))
+        {
+            return specs.ToString()!;
+        }
+        return "empty";
     }
 
     private async Task<string[]> Parse(string[] words)
     {
-        if (Enum.TryParse<Enums.Commands>(words[0], out var command)
+        logger.Log("command in parse: ");
+        foreach (string s in words)
+        {
+            logger.Log(s);
+        }
+        if (Enum.TryParse<Enums.Commands>(words[0], ignoreCase: true, out var command)
             && Enum.IsDefined(command))
         {
             return command switch
@@ -75,7 +86,7 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
                 _ => []
             };
         }
-        logger.Log("invalid command received in Parse");
+        logger.Log("invalid command received in Parse: " + words[0]);
         return [];
     }
 }

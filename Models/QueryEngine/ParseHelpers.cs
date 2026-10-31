@@ -44,16 +44,24 @@ public class ParseHelpers()
 
     public static async Task<string[]> CreateParse(string[] words)
     {
-        string[] specs = [];
+        string[] specs = new string[words.Length];
         specs[0] = "create";
 
-        if (words[2] != "table")
+        if (words[1] != "table")
         {
             Console.WriteLine("we can only make tables :/");
             return [];
         }
         //table name
         specs[1] = words[3];
+        int fill = 2;
+        Console.WriteLine("Creating : \n" + words[2] + ": ");
+        for (int i = 3; i < words.Length; i++)
+        {
+            Console.Write(words[i] + ", ");
+            specs[fill++] = words[i];
+        }
+        Console.WriteLine();
 
         return specs;
     }

@@ -5,7 +5,7 @@ namespace miniDB.QueryEngine;
 
 public class QueryEngine(IMiniLogger logger) : IQueryEngine
 {
-    public async Task<QueryResult> ExecuteAsync(string sql)
+    public async Task<QueryResponse> ExecuteAsync(string sql)
     {
         Console.WriteLine("SQL command received: " + sql);
         var result = "";
@@ -13,7 +13,7 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
         string[] words = sql.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (!await ValidateCommand(words))
         {
-            return new QueryResult
+            return new QueryResponse
             {
                 result = ""
             };
@@ -21,7 +21,7 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
 
         result = await ExecuteCommand(words);
 
-        return new QueryResult
+        return new QueryResponse
         {
             result = result
         };
@@ -59,7 +59,8 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
         //
         //placeholder determine the command and handle accordingly
         // build specs array
-        string[] specs = await Parse(words);
+        QuerySpec specs = await Parse(words);
+        //todo real validate on obj
         if (specs is not null && !string.IsNullOrEmpty(specs.ToString()))
         {
             return specs.ToString()!;
@@ -67,7 +68,7 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
         return "empty";
     }
 
-    private async Task<string[]> Parse(string[] words)
+    private async Task<QuerySpec> Parse(string[] words)
     {
         logger.Log("command in parse: ");
         foreach (string s in words)
@@ -81,12 +82,12 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
             {
                 Enums.Commands.Select => await ParseHelpers.SelectParse(words),
                 Enums.Commands.Create => await ParseHelpers.CreateParse(words),
-                Enums.Commands.Insert => await ParseHelpers.CreateParse(words),
+                Enums.Commands.Insert => await ParseHelpers.InsertParse(words),
                 Enums.Commands.Delete => await ParseHelpers.DeleteParse(words),
-                _ => []
+                _ => new QuerySpec()
             };
         }
         logger.Log("invalid command received in Parse: " + words[0]);
-        return [];
+        return new QuerySpec();
     }
 }

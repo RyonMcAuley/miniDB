@@ -1,6 +1,6 @@
 namespace miniDB.QueryEngine;
 
-public class QueryResult
+public class QueryResponse
 {
     public string? result { get; set; }
 }

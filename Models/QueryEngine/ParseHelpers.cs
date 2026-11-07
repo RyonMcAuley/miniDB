@@ -37,15 +37,40 @@ public class ParseHelpers()
 
     public static async Task<QuerySpec> InsertParse(string[] words)
     {
-        return new QuerySpec();
-        // string[] specs = [];
-        // specs[0] = "insert into";
-        //
-        // return specs;
+        try
+        {
+            // insert into {tableName} (col, col, col)
+            // values (val, val, val)
+            var result = new QuerySpec();
+            result.Command = Enums.Commands.Insert;
+            result.TableName = words[2];
+            result.Columns = new string[words.Length];
+
+            var index = 3;
+            while (words[index].ToLower() != "values")
+            {
+                result.Columns.Append(words[index++]);
+            }
+
+            result.Values = new string[result.Columns.Length];
+            // pre-increment & -1 to account for words[index] being "values"
+            while (index < words.Length - 1)
+            {
+                result.Values.Append(words[++index]);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("InsertParse exploded, probably array: \n" + "Exception: " + ex);
+            return new QuerySpec();
+        }
     }
 
     public static async Task<QuerySpec> CreateParse(string[] words)
     {
+        // create table customers
+        // (string row1 string row2)
         var result = new QuerySpec();
         result.Command = Enums.Commands.Create;
 
@@ -55,12 +80,16 @@ public class ParseHelpers()
             return result;
         }
         result.TableName = words[2];
-        Console.WriteLine("Creating : \n" + result.TableName + ": ");
+        Console.WriteLine("Creating Table " + result.TableName + ": ");
         result.Columns ??= new string[words.Length];
         for (int i = 3; i < words.Length; i++)
         {
-            Console.Write(words[i] + ", ");
+            Console.Write(words[i]);
             result.Columns.Append<string>(words[i]);
+            if (i < words.Length - 1)
+            {
+                Console.Write(", ");
+            }
         }
         Console.WriteLine();
 

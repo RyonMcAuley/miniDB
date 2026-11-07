@@ -6,4 +6,14 @@ public class MiniLogger : IMiniLogger
     {
         Console.WriteLine(log);
     }
+
+    public void LogWarning(string log)
+    {
+        Console.WriteLine("WARN: " + log);
+    }
+
+    public void LogError(string log)
+    {
+        Console.WriteLine("ERR: " + log);
+    }
 }

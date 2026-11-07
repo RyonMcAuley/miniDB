@@ -70,11 +70,11 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
 
     private async Task<QuerySpec> Parse(string[] words)
     {
-        logger.Log("command in parse: ");
-        foreach (string s in words)
-        {
-            logger.Log(s);
-        }
+        // logger.Log("command in parse: ");
+        // foreach (string s in words)
+        // {
+        // logger.Log(s);
+        // }
         if (Enum.TryParse<Enums.Commands>(words[0], ignoreCase: true, out var command)
             && Enum.IsDefined(command))
         {
@@ -87,7 +87,7 @@ public class QueryEngine(IMiniLogger logger) : IQueryEngine
                 _ => new QuerySpec()
             };
         }
-        logger.Log("invalid command received in Parse: " + words[0]);
+        logger.LogWarning("invalid command received in Parse: " + words[0]);
         return new QuerySpec();
     }
 }
